@@ -1,26 +1,22 @@
 // pizacoupon-website/js/main.js
 
 let siteTour = null; // 將 tour 實例移至外部，以便事件監聽器可以訪問
-let siteTourInitialized = false;
 
 /**
  * 功能導覽函式 (由 coupon.js 在資料載入後呼叫)
  */
 function startSiteTour() {
-    // 1. 檢查導覽是否已完成，或在本輪瀏覽中是否已啟動過
-    if (localStorage.getItem('pzahaTourCompleted') || siteTourInitialized) {
+    // 1. 檢查導覽是否已在執行中，防止重複點擊
+    if (siteTour && siteTour.isActive()) {
         return;
     }
 
     // 2. 確保頁面上至少有一張優惠券卡片，否則不啟動導覽
     if (!document.querySelector('#row .card')) {
-        console.log("沒有優惠券可供導覽，跳過功能介紹。");
+        alert("目前沒有優惠券內容可供導覽，請稍後再試。");
         return;
     }
     
-    // 3. 標記導覽已啟動
-    siteTourInitialized = true;
-
     // 建立一個自訂的關閉按鈕 HTML
     const customCancelIcon = '<button type="button" class="tour-close-btn" aria-label="Close">&times;</button>';
 
@@ -88,12 +84,8 @@ function startSiteTour() {
         ]
     });
 
-    // 當導覽完成或被取消時，標記為已完成
-    const markTourAsCompleted = () => {
-        localStorage.setItem('pzahaTourCompleted', 'true');
-    };
-    siteTour.on('complete', markTourAsCompleted);
-    siteTour.on('cancel', markTourAsCompleted);
+    // 移除了自動儲存 "已完成" 狀態到 localStorage 的邏輯
+    // 讓使用者可以隨時點擊 "功能導覽" 按鈕重新開始
 
     siteTour.start();
 }
@@ -106,6 +98,12 @@ document.addEventListener('DOMContentLoaded', function() {
             siteTour.cancel();
         }
     });
+
+    // 為手動觸發導覽的按鈕新增事件監聽器
+    const startTourBtn = document.getElementById('startTourBtn');
+    if (startTourBtn) {
+        startTourBtn.addEventListener('click', startSiteTour);
+    }
 
     // Initialize all Bootstrap tooltips on the page
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
