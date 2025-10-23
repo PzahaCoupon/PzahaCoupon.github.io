@@ -13,6 +13,13 @@ on:
 jobs:
   update-sitemap:
     runs-on: ubuntu-latest
+    
+    # --- 新增的權限設定 ---
+    # 賦予 GITHUB_TOKEN 寫入儲存庫的權限，以便 git push
+    permissions:
+      contents: write
+    # ---------------------
+
     steps:
       # 步驟 1: 取得您的專案程式碼
       - name: Check out code
