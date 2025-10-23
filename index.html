@@ -12,6 +12,7 @@
     <meta name="author" content="Zoura">
     <title>PzahaCoupon - 必勝客優惠碼、優惠券查詢</title>
 
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
     <link rel="preconnect" href="https://klficsifsxcqxwqkpwav.supabase.co" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
@@ -19,7 +20,8 @@
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"></noscript>
     
-    <link href="./css/main.css?v=1.0.1" rel="stylesheet">
+    <link rel="preload" href="./css/main.css?v=1.0.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="./css/main.css?v=1.0.1"></noscript>
 
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css"></noscript>
@@ -46,12 +48,12 @@
             <div class="last-update-time">最後更新: <span id="lastUpdate"></span></div>
             <button type="button" id="favoritesBtn" class="bi bi-bookmarks-fill header-icon"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
-                 title="您的收藏將儲存在此瀏覽器中。清除瀏覽器快取或Cookie可能會導致收藏遺失。"></button>
-            <a href="https://www.pizzahut.com.tw/promotions/?mode=cpSch&type=plu" target="_blank" class="bi bi-cart-fill header-icon" title="前往點餐"></a>
-            <button type="button" id="startTourBtn" class="bi bi-question-circle header-icon" title="功能導覽"></button>
-            <button type="button" class="bi bi-info-circle header-icon" title="聯絡資訊" data-bs-toggle="modal" data-bs-target="#contactModal"></button>
-            <button type="button" class="bi bi-journal-text header-icon" title="更新日誌" data-bs-toggle="modal" data-bs-target="#updateLogModal"></button>
-            <button id="themeToggle" class="btn btn-link p-0 ms-2 header-icon" title="切換夜間模式">
+                 title="您的收藏將儲存在此瀏覽器中。清除瀏覽器快取或Cookie可能會導致收藏遺失。" aria-label="查看收藏清單"></button>
+            <a href="https://www.pizzahut.com.tw/promotions/?mode=cpSch&type=plu" target="_blank" class="bi bi-cart-fill header-icon" title="前往點餐" aria-label="前往點餐"></a>
+            <button type="button" id="startTourBtn" class="bi bi-question-circle header-icon" title="功能導覽" aria-label="功能導覽"></button>
+            <button type="button" class="bi bi-info-circle header-icon" title="聯絡資訊" data-bs-toggle="modal" data-bs-target="#contactModal" aria-label="聯絡資訊"></button>
+            <button type="button" class="bi bi-journal-text header-icon" title="更新日誌" data-bs-toggle="modal" data-bs-target="#updateLogModal" aria-label="更新日誌"></button>
+            <button id="themeToggle" class="btn btn-link p-0 ms-2 header-icon" title="切換夜間模式" aria-label="切換夜間模式">
               <i class="bi bi-moon-fill"></i>
             </button>
           </div>
@@ -60,7 +62,7 @@
     </header>
 
     <main role="main">
-      <i class="bi bi-arrow-up-circle-fill top-btn"></i>
+      <button type="button" class="bi bi-arrow-up-circle-fill top-btn" aria-label="回到頂端"></button>
       <div class="album py-2">
         <div class="container mb-3" id="container">
           <div class="row mb-3">
