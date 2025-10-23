@@ -1,4 +1,4 @@
-name: [pizza] 網站更新日
+name: '[pizza] 網站更新日'
 
 # 觸發條件：
 # 1. on: push (當您手動推送到 main 分支時)
