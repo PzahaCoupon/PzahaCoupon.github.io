@@ -100,14 +100,14 @@ function renderCoupons(couponsToRender) {
     couponsToRender.forEach(coupon => {
         const priceValue = parseFloat(coupon.price);
         const formattedPrice = isNaN(priceValue) ? 'N/A' : `$${priceValue}`;
-
+        
         const descriptionToDisplay = coupon.simplifiedDescription || '';
-
-        // 使用正規表示式來處理所有可能的換行符號
+        
+        // 【最終修正 1】使用正規表示式來處理所有可能的換行符號
         const descriptionHtml = descriptionToDisplay
             ? `<ul class="coupon-description-list">${descriptionToDisplay.split(/\n|\\n/g).map(line => line.trim() ? `<li>${line}</li>` : '').filter(line => line).join('')}</ul>`
             : '';
-
+        
         const isFavorited = favoriteCoupons.has(coupon.couponCode);
 
         const cardDiv = document.createElement('div');
@@ -119,7 +119,7 @@ function renderCoupons(couponsToRender) {
                     <div class="coupon-price-badge">${formattedPrice}</div>
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <h3 class="card-title">${coupon.name}</h3>
+                    <h5 class="card-title">${coupon.name}</h5>
                     <p class="card-text coupon-code-display">
                         代碼: <strong class="coupon-code-text">${coupon.couponCode}</strong>
                         <i class="bi bi-files copy-code-btn" title="點擊複製代碼" data-coupon-code="${coupon.couponCode}"></i>
@@ -141,10 +141,9 @@ function renderCoupons(couponsToRender) {
     rowContainer.appendChild(fragment);
     updateSearchResultCount(couponsToRender.length);
 
-    // [MODIFIED] 移除了自動啟動功能導覽的呼叫
-    // if (typeof startSiteTour === 'function' && !couponCodeFromUrl) {
-    //     startSiteTour();
-    // }
+    if (typeof startSiteTour === 'function' && !couponCodeFromUrl) {
+        startSiteTour();
+    }
 }
 
 // ==== 輔助函數 ====
@@ -184,17 +183,17 @@ function showCouponDetailModal(coupon) {
     shareBtn.dataset.description = coupon.description;
     shareBtn.dataset.endDate = coupon.endDate;
     detailHeader.appendChild(shareBtn);
-
+    
     detailTitle.textContent = coupon.name;
-
-    // 使用正規表示式來處理所有可能的換行符號
+    
+    // 【最終修正 2】使用正規表示式來處理所有可能的換行符號
     detailBody.innerHTML = `
         <p><strong>優惠券代碼:</strong> <strong class="coupon-code-text">${coupon.couponCode}</strong> <i class="bi bi-files copy-code-btn" title="點擊複製代碼" data-coupon-code="${coupon.couponCode}"></i></p>
         <p><strong>價格:</strong> ${coupon.price}</p>
         <p><strong>到期日:</strong> ${coupon.endDate}</p>
         <p><strong>點餐類型:</strong> ${coupon.orderType || '不限'}</p>
         <p><strong>詳細內容:</strong><br>${(coupon.description || '').replace(/\n|\\n/g, '<br>')}</p>`;
-
+    
     bootstrap.Modal.getOrCreateInstance(detailModal).show();
 }
 
@@ -211,7 +210,7 @@ function performSearchAndFilter() {
     filteredCoupons = couponsToProcess.filter(coupon => {
         const couponTags = (coupon.tags || '').toLowerCase().split(',').map(t => t.trim());
         const couponOrderType = (coupon.orderType || '').toLowerCase();
-
+        
         if (selectedIncludeTags.size > 0 && ![...selectedIncludeTags].some(tag => couponTags.includes(tag))) return false;
         if (selectedOrderTypes.size > 0 && ![...selectedOrderTypes].some(type => couponOrderType === type)) return false;
         if (selectedExcludeTags.size > 0 && [...selectedExcludeTags].some(tag => couponTags.includes(tag))) return false;
@@ -251,7 +250,7 @@ function initFilterButtons() {
         const currentSet = sets[filterType];
 
         button.classList.toggle('active') ? currentSet.add(value) : currentSet.delete(value);
-
+        
         button.blur();
         performSearchAndFilter();
     };
@@ -268,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetAllFilters() {
         document.getElementById('searchInput').value = '';
-
+        
         document.querySelectorAll('.filter-btn.active, .exclude-filter-btn.active').forEach(button => {
             button.classList.remove('active');
         });
@@ -276,10 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedIncludeTags.clear();
         selectedOrderTypes.clear();
         selectedExcludeTags.clear();
-
+        
         document.getElementById('enableFlavorSearch').checked = false;
         document.getElementById('sortSelect').value = 'price-asc';
-
+        
         isViewingFavorites = false;
         document.getElementById('favoritesBtn').classList.remove('active');
 
@@ -316,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (copyBtn) {
             copyToClipboard(copyBtn.dataset.couponCode, copyBtn);
         }
-
+        
         const shareBtn = e.target.closest('.share-btn');
         if (shareBtn) {
             const { couponCode, description, endDate } = shareBtn.dataset;
@@ -335,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bookmarkBtn.classList.toggle('bi-bookmark-fill');
         }
     });
-
+    
     // Event Delegation for Modal
     const detailModalEl = document.getElementById('detailModel');
     detailModalEl.addEventListener('click', e => {
@@ -355,15 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     detailModalEl.addEventListener('hidden.bs.modal', () => {
-        // [MODIFIED] 移除了在 modal 關閉後啟動導覽的邏輯
-        // if (couponCodeFromUrl && typeof startSiteTour === 'function') {
-        //     startSiteTour();
-        //     couponCodeFromUrl = null;
-        // }
-        
-        // 確保 couponCodeFromUrl 被重置
-        if (couponCodeFromUrl) {
-            couponCodeFromUrl = null;
+        if (couponCodeFromUrl && typeof startSiteTour === 'function') {
+            startSiteTour();
+            couponCodeFromUrl = null; 
         }
     });
 
