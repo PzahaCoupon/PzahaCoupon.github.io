@@ -420,5 +420,5 @@ body[data-theme="dark"] .info-card .accordion-body a {
 
 /* ==== PageSpeed Insights 修正 ==== */
 div#row {
-  min-height: 1000px; /* 預留卡片空間以減少 CLS */
+  min-height: 3000px; /* 大幅增加預留高度以減少 CLS */
 }
