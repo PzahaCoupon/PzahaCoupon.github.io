@@ -141,9 +141,10 @@ function renderCoupons(couponsToRender) {
     rowContainer.appendChild(fragment);
     updateSearchResultCount(couponsToRender.length);
 
-    if (typeof startSiteTour === 'function' && !couponCodeFromUrl) {
-        startSiteTour();
-    }
+    // [MODIFIED] 移除了自動啟動功能導覽的呼叫
+    // if (typeof startSiteTour === 'function' && !couponCodeFromUrl) {
+    //     startSiteTour();
+    // }
 }
 
 // ==== 輔助函數 ====
@@ -354,8 +355,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     detailModalEl.addEventListener('hidden.bs.modal', () => {
-        if (couponCodeFromUrl && typeof startSiteTour === 'function') {
-            startSiteTour();
+        // [MODIFIED] 移除了在 modal 關閉後啟動導覽的邏輯
+        // if (couponCodeFromUrl && typeof startSiteTour === 'function') {
+        //     startSiteTour();
+        //     couponCodeFromUrl = null;
+        // }
+        
+        // 確保 couponCodeFromUrl 被重置
+        if (couponCodeFromUrl) {
             couponCodeFromUrl = null;
         }
     });
