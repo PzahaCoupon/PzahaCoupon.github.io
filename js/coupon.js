@@ -80,6 +80,13 @@ async function fetchCoupons() {
 
     } catch (error) {
         console.error('載入 PzahaCoupon 資料失敗:', error);
+        
+        // [修改] CLS 修正：如果載入失敗，也要移除 spinner
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.remove();
+        }
+        
         document.getElementById('row').innerHTML = '<div class="col-12 text-center text-danger mt-5">載入 PzahaCoupon 資料失敗，請稍後再試。</div>';
     }
 }
@@ -87,7 +94,14 @@ async function fetchCoupons() {
 // ==== 渲染優惠券到頁面 ====
 function renderCoupons(couponsToRender) {
     const rowContainer = document.getElementById('row');
-    rowContainer.innerHTML = '';
+
+    // [修改] CLS 修正：在渲染卡片前，移除載入中的 spinner
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    if (loadingSpinner) {
+        loadingSpinner.remove();
+    }
+
+    rowContainer.innerHTML = ''; // 清空 (spinner 已經被移除了)
 
     if (couponsToRender.length === 0) {
         const message = isViewingFavorites ? '您的收藏清單是空的。' : '沒有找到符合條件的優惠券。';
@@ -355,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     detailModalEl.addEventListener('hidden.bs.modal', () => {
-        // [MODIFIED] 移除了在 modal 關閉後啟動導覽的邏輯
+        // [MODIFIED] 移除了在 modal 關閉後啟動導覽的 logique
         // if (couponCodeFromUrl && typeof startSiteTour === 'function') {
         //     startSiteTour();
         //     couponCodeFromUrl = null;
