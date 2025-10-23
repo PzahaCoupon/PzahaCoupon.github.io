@@ -1,0 +1,49 @@
+name: [pizza] 網站更新日
+
+# 觸發條件：
+# 1. on: push (當您手動推送到 main 分支時)
+# 2. on: schedule (設定排程，cron: '0 16 * * *' 表示每天 UTC 16:00 執行)
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 16 * * *' # 每天 UTC 16:00 (台灣時間凌晨 00:00 執行)
+
+jobs:
+  update-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      # 步驟 1: 取得您的專案程式碼
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # 步驟 2: 更新 sitemap.xml 中的 <lastmod> 日期 (使用台灣時區)
+      - name: Update lastmod date in sitemap.xml
+        run: |
+          # 設定時區為 Asia/Taipei 並取得 YYYY-MM-DD 格式的日期
+          # 這樣在台灣 00:00 跨日執行時，就會抓到新一天的日期
+          CURRENT_DATE=$(TZ="Asia/Taipei" date +"%Y-%m-%d")
+          
+          # 替換 sitemap.xml 檔案中的日期
+          sed -i "s|<lastmod>.*</lastmod>|<lastmod>${CURRENT_DATE}</lastmod>|" sitemap.xml
+
+      # 步驟 3: 設定 Git 提交者資訊
+      - name: Configure Git
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+
+      # 步驟 4: 檢查檔案是否有變更，如果有，就自動 Commit 並 Push
+      - name: Commit and push if changes
+        run: |
+          git add sitemap.xml
+          # 檢查是否有變更
+          if ! git diff --staged --quiet; then
+            # 如果 sitemap.xml 有變更 (日期不同了)
+            git commit -m "Automated: Update sitemap.xml lastmod date (CST)"
+            git push
+          else
+            # 如果日期和今天一樣 (例如您手動 push 過了)，就不做事
+            echo "sitemap.xml is already up-to-date."
+          fi
