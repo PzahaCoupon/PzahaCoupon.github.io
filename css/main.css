@@ -107,6 +107,14 @@ header {
 .last-update-time { margin-right: 15px; }
 #favoritesBtn.active { color: #FFD700; }
 
+/* [修改] A11y 修正：重設 <button> 樣式，使其看起來像原本的 div */
+.navbar-dark .info .header-icon[type="button"] {
+    background: transparent;
+    border: none;
+    padding: 0;
+    vertical-align: middle;
+}
+
 /* Back to Top Button */
 .top-btn { position: fixed; bottom: 20px; right: 20px; font-size: 2.5rem; color: var(--button-outline-primary-color); cursor: pointer; display: none; z-index: 1000; opacity: 0.8; transition: opacity 0.3s ease-in-out; }
 .top-btn:hover { opacity: 1; color: var(--button-primary-bg); }
@@ -140,6 +148,12 @@ header {
     margin-bottom: 1rem; 
 }
 hr { border-top: 1px solid var(--hr-border-color); }
+
+/* [修改] CLS 修正：為優惠券列表 #row 增加最小高度，防止頁尾跳動 */
+#row {
+    min-height: 50vh;
+}
+
 .form-label.text-danger { color: var(--text-color) !important; } 
 
 .form-check-input:checked {
