@@ -240,17 +240,55 @@ function performSearchAndFilter() {
     sortCoupons(document.getElementById('sortSelect').value);
 }
 
+// [!!!! MODIFIED BLOCK !!!!]
+// 修正了 'end_date-asc' 和 'end_date-desc' 的排序邏輯
+// 以正確處理 "未知" 或無效的日期
 function sortCoupons(sortBy) {
     const sorters = {
         'price-asc': (a, b) => (parseFloat(a.price) || Infinity) - (parseFloat(b.price) || Infinity),
         'price-desc': (a, b) => (parseFloat(b.price) || -Infinity) - (parseFloat(a.price) || -Infinity),
         'coupon_code-asc': (a, b) => (a.couponCode || '').localeCompare(b.couponCode || ''),
         'coupon_code-desc': (a, b) => (b.couponCode || '').localeCompare(a.couponCode || ''),
-        'end_date-asc': (a, b) => new Date(a.endDate) - new Date(b.endDate),
-        'end_date-desc': (a, b) => new Date(b.endDate) - new Date(a.endDate)
+        'end_date-asc': (a, b) => {
+            const dateA = new Date(a.endDate);
+            const dateB = new Date(b.endDate);
+            const timeA = dateA.getTime();
+            const timeB = dateB.getTime();
+            const validA = !isNaN(timeA);
+            const validB = !isNaN(timeB);
+
+            if (validA && validB) {
+                return timeA - timeB; // 兩者皆有效，正常比較
+            } else if (validA && !validB) {
+                return -1; // B無效 (未知)，A (有效) 排在前面
+            } else if (!validA && validB) {
+                return 1; // A無效 (未知)，B (有效) 排在前面
+            } else {
+                return 0; // 兩者皆無效，順序不變
+            }
+        },
+        'end_date-desc': (a, b) => {
+            const dateA = new Date(a.endDate);
+            const dateB = new Date(b.endDate);
+            const timeA = dateA.getTime();
+            const timeB = dateB.getTime();
+            const validA = !isNaN(timeA);
+            const validB = !isNaN(timeB);
+
+            if (validA && validB) {
+                return timeB - timeA; // 兩者皆有效，正常比較
+            } else if (validA && !validB) {
+                return 1; // B無效 (未知)，B (無效) 排在前面
+            } else if (!validA && validB) {
+                return -1; // A無效 (未知)，A (無效) 排在前面
+            } else {
+                return 0; // 兩者皆無效，順序不變
+            }
+        }
     };
     renderCoupons([...filteredCoupons].sort(sorters[sortBy]));
 }
+// [!!!! END OF MODIFIED BLOCK !!!!]
 
 function initFilterButtons() {
     const handleFilterButtonClick = (button) => {
